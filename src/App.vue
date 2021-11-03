@@ -2,8 +2,14 @@
     <div id="app">
         <div
         class="office">
-            <Map />
-            <SideMenu />
+            <Map
+                @userChecked="userChecked"
+            />
+            <SideMenu
+                :isUserOpenned="isUserOpenned"
+                :person="checkedUser"
+                @update:isUserOpenned="unCloseUser"
+            />
         </div>
     </div>
 </template>
@@ -19,6 +25,22 @@ export default {
     Map,
     SideMenu,
   },
+  data() {
+      return {
+          isUserOpenned: false,
+          checkedUser: null
+      }
+  },
+  methods: {
+      userChecked(user) {
+          console.log('user in App', user);
+          this.checkedUser = user;
+          this.isUserOpenned = true;
+      },
+      unCloseUser(item) {
+          this.isUserOpenned = item;
+      }
+  }
 };
 </script>
 

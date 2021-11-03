@@ -7,7 +7,8 @@
         v-if="!isLoading"
         class="map-root"
     >
-        <MapSVG ref="svg" />
+        <MapSVG ref="svg"
+        @click="onMapClick"/>
 
         <TableSVG
         v-show="false"
@@ -24,6 +25,7 @@ import TableSVG from '@/assets/images/workPlace.svg';
 import * as d3 from "d3";
 import tables from "@/assets/data/tables.json";
 import legend from "@/assets/data/legend.json";
+import people from "@/assets/data/people.json";
 
 export default {
     components: {
@@ -54,9 +56,11 @@ export default {
     },
     methods: {
         drawTables() {
+            // создаём группу рабочих мест
             const svgTablesGroup = this.g.append("g").classed("groupPlaces", true);
 
             this.tables.forEach((table) => {
+                //создать группу рабочего стола
 
                 const svgTable = svgTablesGroup
                     .append('g')
@@ -68,12 +72,17 @@ export default {
                 .attr("transform", `rotate(${table.rotate || 0})`)
                 .attr('group_id', table.group_id)
                 .html(this.tableSVG.html())
-                .attr( 
+                .attr( // устанавливаем цвет подразделения
                         "fill",
                         legend.find((it) => it.group_id === table.group_id)?.color ?? "transparent"
                     );
 
             });
+        },
+        onMapClick(e) {
+            const person = people.find((person) => person._id === ( +e.path[3].id));
+            this.$emit("userChecked", person);
+
         }
     },
 };
