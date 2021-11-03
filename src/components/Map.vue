@@ -54,11 +54,9 @@ export default {
     },
     methods: {
         drawTables() {
-            // создаём группу рабочих мест
             const svgTablesGroup = this.g.append("g").classed("groupPlaces", true);
 
             this.tables.forEach((table) => {
-                //создать группу рабочего стола
 
                 const svgTable = svgTablesGroup
                     .append('g')
@@ -70,7 +68,7 @@ export default {
                 .attr("transform", `rotate(${table.rotate || 0})`)
                 .attr('group_id', table.group_id)
                 .html(this.tableSVG.html())
-                .attr( // устанавливаем цвет подразделения
+                .attr( 
                         "fill",
                         legend.find((it) => it.group_id === table.group_id)?.color ?? "transparent"
                     );
