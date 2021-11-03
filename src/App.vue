@@ -1,6 +1,7 @@
 <template>
     <div id="app">
-        <div class="office">
+        <div
+        class="office">
             <Map />
             <SideMenu />
         </div>
@@ -8,6 +9,7 @@
 </template>
 
 <script>
+
 import Map from "./components/Map.vue";
 import SideMenu from "./components/SideMenu.vue";
 

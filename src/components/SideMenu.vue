@@ -27,14 +27,16 @@
                         v-if="legend.length > 0"
                         class="legend__items"
                     >
-                        <LegendItem
+                    <Draggable v-model="legend">
+                        <legend-item
                             v-for="(item, index) in legend"
                             :key="index"
                             :color="item.color"
                             :text="item.text"
-                            :counter="item.counter"
+                            :counter="actualCounter[index]"
                             class="legend__item"
                         />
+                    </Draggable>
                     </div>
                     <span
                         v-else
@@ -44,7 +46,7 @@
                     </span>
                 </div>
                 <div class="legend__chart">
-                    <!-- chart -->
+                    <pie-chart ref="chart" />
                 </div>
             </div>
             <div
@@ -68,6 +70,9 @@
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
 import legend from "@/assets/data/legend.json";
+import Draggable from "vuedraggable";
+import { Doughnut as PieChart } from "vue-chartjs";
+import tables from "@/assets/data/tables.json";
 
 export default {
     props: {
@@ -83,22 +88,63 @@ export default {
     components: {
         LegendItem,
         PersonCard,
+        Draggable,
+        PieChart
     },
     data() {
         return {
             legend: [],
+            actualCounter: []
         };
     },
     created() {
         this.loadLegend();
     },
+    mounted() {
+        this.tables = tables;
+        this.getActualCounter();
+        this.makeChart();
+    },
     methods: {
+        getActualCounter() {
+            const result = [0];
+            this.tables.forEach((table) => {
+                if(!result[table.group_id]) {
+                    result[table.group_id] = 1;
+                } else {
+                    result[table.group_id] += 1;
+                }
+            });
+           this.actualCounter = result;
+        },
         loadLegend() {
             this.legend = legend;
         },
         closeProfile() {
             this.$emit("update:isUserOpenned", false);
         },
+        makeChart() {
+            const chartData = {
+                labels: this.legend.map((it) => it.text),
+                datasets: [
+                    {
+                        label: "Легенда",
+                        backgroundColor: this.legend.map(
+                            (legendItem) => legendItem.color
+                        ),
+
+                        data: this.actualCounter
+                    },
+                ],
+            };
+            const options = {
+                borderWidth: "10px",
+                legend: {
+                    display: false,
+                },
+            };
+            this.$refs.chart.renderChart(chartData, options);
+        }
     },
 };
 </script>
