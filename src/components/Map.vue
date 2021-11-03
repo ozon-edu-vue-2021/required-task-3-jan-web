@@ -1,22 +1,22 @@
 
 <template>
-    <div class="map">
-        <h3>Карта офиса</h3>
+        <div class="map">
+            <h3>Карта офиса</h3>
 
-    <div
-        v-if="!isLoading"
-        class="map-root"
-    >
+        <div
+            v-if="!isLoading"
+            class="map-root"
+        >
         <MapSVG ref="svg"
-        @click="onMapClick"/>
+            @click="onMapClick"/>
 
         <TableSVG
-        v-show="false"
-        ref="table"
+            v-show="false"
+            ref="table"
         />
-    </div>
-        <div v-else>Loading...</div>
-    </div>
+        </div>
+            <div v-else>Loading...</div>
+        </div>
 </template>
 
 <script>
@@ -45,23 +45,19 @@ export default {
         this.svg = d3.select(this.$refs.svg);
         this.g = this.svg.select("g");
         this.tableSVG = d3.select(this.$refs.table);
-
         this.tables = tables;
 
         if(this.g) {
             this.drawTables()
            } else {
-               console.log('ERROR');
+               throw new Error('Exception message');
            }
     },
     methods: {
         drawTables() {
-            // создаём группу рабочих мест
             const svgTablesGroup = this.g.append("g").classed("groupPlaces", true);
 
             this.tables.forEach((table) => {
-                //создать группу рабочего стола
-
                 const svgTable = svgTablesGroup
                     .append('g')
                     .attr("transform", `translate(${table.x}, ${table.y}) scale(0.5)`)
@@ -72,11 +68,10 @@ export default {
                 .attr("transform", `rotate(${table.rotate || 0})`)
                 .attr('group_id', table.group_id)
                 .html(this.tableSVG.html())
-                .attr( // устанавливаем цвет подразделения
+                .attr(
                         "fill",
                         legend.find((it) => it.group_id === table.group_id)?.color ?? "transparent"
                     );
-
             });
         },
         onMapClick(e) {

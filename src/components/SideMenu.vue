@@ -30,7 +30,7 @@
                     <Draggable v-model="legend">
                         <legend-item
                             v-for="(item, index) in legend"
-                            :key="index"
+                            :key="item.color"
                             :color="item.color"
                             :text="item.text"
                             :counter="actualCounter[index]"
@@ -45,9 +45,7 @@
                         Список пуст
                     </span>
                 </div>
-                <div class="legend__chart">
-                    <pie-chart ref="chart" />
-                </div>
+                <Chart />
             </div>
             <div
                 v-else
@@ -69,10 +67,10 @@
 <script>
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
+import tables from "@/assets/data/tables.json";
 import legend from "@/assets/data/legend.json";
 import Draggable from "vuedraggable";
-import { Doughnut as PieChart } from "vue-chartjs";
-import tables from "@/assets/data/tables.json";
+import Chart from "./Chart.vue"
 
 export default {
     props: {
@@ -84,12 +82,13 @@ export default {
             type: Object,
             default: null,
         },
+
     },
     components: {
         LegendItem,
         PersonCard,
         Draggable,
-        PieChart
+        Chart
     },
     data() {
         return {
@@ -103,7 +102,7 @@ export default {
     mounted() {
         this.tables = tables;
         this.getActualCounter();
-        this.makeChart();
+
     },
     methods: {
         getActualCounter() {
@@ -123,28 +122,7 @@ export default {
         closeProfile() {
             this.$emit("update:isUserOpenned", false);
         },
-        makeChart() {
-            const chartData = {
-                labels: this.legend.map((it) => it.text),
-                datasets: [
-                    {
-                        label: "Легенда",
-                        backgroundColor: this.legend.map(
-                            (legendItem) => legendItem.color
-                        ),
 
-                        data: this.actualCounter
-                    },
-                ],
-            };
-            const options = {
-                borderWidth: "10px",
-                legend: {
-                    display: false,
-                },
-            };
-            this.$refs.chart.renderChart(chartData, options);
-        }
     },
 };
 </script>
