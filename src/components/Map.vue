@@ -8,6 +8,7 @@
             >
             <MapSVG ref="svg"
                     @click="onMapClick"
+                    v-click-outside="outsideClick"
             />
             <TableSVG
                 v-show="false"
@@ -22,8 +23,12 @@
 import MapSVG from '@/assets/images/map.svg';
 import TableSVG from '@/assets/images/workPlace.svg';
 import * as d3 from "d3";
+import ClickOutside from 'vue-click-outside';
 
 export default {
+    directives: {
+        ClickOutside
+    },
     components: {
         MapSVG,
         TableSVG
@@ -63,6 +68,9 @@ export default {
            }
     },
     methods: {
+        outsideClick() {
+            console.log('Click outside');
+        },
         drawTables() {
             const svgTablesGroup = this.group.append("g").classed("groupPlaces", true);
 
