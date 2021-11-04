@@ -4,6 +4,7 @@
         class="office">
             <Map
                 @userChecked="userChecked"
+                @update:isUserOpenned="unCloseUser"
             />
             <SideMenu
                 :isUserOpenned="isUserOpenned"

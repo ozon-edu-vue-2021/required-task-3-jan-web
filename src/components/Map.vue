@@ -75,9 +75,12 @@ export default {
             });
         },
         onMapClick(e) {
+            if(e.path[3].id) {
             const person = people.find((person) => person._id === ( +e.path[3].id));
             this.$emit("userChecked", person);
-
+            } else {
+                this.$emit("update:isUserOpenned", false);
+            }
         }
     },
 };
