@@ -2,19 +2,18 @@
 <template>
         <div class="map">
             <h3>Карта офиса</h3>
-
-        <div
-            v-if="!isLoading"
-            class="map-root"
-        >
-        <MapSVG ref="svg"
-            @click="onMapClick"/>
-
-        <TableSVG
-            v-show="false"
-            ref="table"
-        />
-        </div>
+            <div
+                v-if="!isLoading"
+                class="map-root"
+            >
+            <MapSVG ref="svg"
+                    @click="onMapClick"
+            />
+            <TableSVG
+                v-show="false"
+                ref="table"
+            />
+            </div>
             <div v-else>Loading...</div>
         </div>
 </template>
@@ -23,31 +22,41 @@
 import MapSVG from '@/assets/images/map.svg';
 import TableSVG from '@/assets/images/workPlace.svg';
 import * as d3 from "d3";
-import tables from "@/assets/data/tables.json";
-import legend from "@/assets/data/legend.json";
-import people from "@/assets/data/people.json";
 
 export default {
     components: {
         MapSVG,
         TableSVG
     },
+    props: {
+        tables: {
+            type: Array,
+            default: null,
+        },
+        legend: {
+            type: Array,
+            default: null,
+        },
+        people: {
+            type: Array,
+            default: null,
+        },
+
+    },
     data() {
         return {
             isLoading: false,
             svg: null,
-            g: null,
-            tables: [],
+            group: null,
             tableSVG: null,
         };
     },
     mounted() {
         this.svg = d3.select(this.$refs.svg);
-        this.g = this.svg.select("g");
+        this.group = this.svg.select("g");
         this.tableSVG = d3.select(this.$refs.table);
-        this.tables = tables;
 
-        if(this.g) {
+        if(this.group) {
             this.drawTables()
            } else {
                throw new Error('Exception message');
@@ -55,7 +64,7 @@ export default {
     },
     methods: {
         drawTables() {
-            const svgTablesGroup = this.g.append("g").classed("groupPlaces", true);
+            const svgTablesGroup = this.group.append("g").classed("groupPlaces", true);
 
             this.tables.forEach((table) => {
                 const svgTable = svgTablesGroup
@@ -70,19 +79,19 @@ export default {
                 .html(this.tableSVG.html())
                 .attr(
                         "fill",
-                        legend.find((it) => it.group_id === table.group_id)?.color ?? "transparent"
+                        this.legend.find((it) => it.group_id === table.group_id)?.color ?? "transparent"
                     );
             });
         },
         onMapClick(e) {
             if(e.path[3].id) {
-            const person = people.find((person) => person._id === ( +e.path[3].id));
+            const person = this.people.find((person) => person._id === ( +e.path[3].id));
             this.$emit("userChecked", person);
             } else {
                 this.$emit("update:isUserOpenned", false);
             }
         }
-    },
+    }
 };
 </script>
 

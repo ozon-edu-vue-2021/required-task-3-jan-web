@@ -5,10 +5,15 @@
             <Map
                 @userChecked="userChecked"
                 @update:isUserOpenned="unCloseUser"
+                :tables="tables"
+                :legend="legend"
+                :people="people"
             />
             <SideMenu
                 :isUserOpenned="isUserOpenned"
                 :person="checkedUser"
+                :tables="tables"
+                :legends="legend"
                 @update:isUserOpenned="unCloseUser"
             />
         </div>
@@ -19,6 +24,9 @@
 
 import Map from "./components/Map.vue";
 import SideMenu from "./components/SideMenu.vue";
+import tables from "@/assets/data/tables.json";
+import legend from "@/assets/data/legend.json";
+import people from "@/assets/data/people.json";
 
 export default {
   name: "App",
@@ -29,12 +37,14 @@ export default {
   data() {
       return {
           isUserOpenned: false,
-          checkedUser: null
+          checkedUser: null,
+          tables,
+          legend,
+          people
       }
   },
   methods: {
       userChecked(user) {
-          console.log('user in App', user);
           this.checkedUser = user;
           this.isUserOpenned = true;
       },

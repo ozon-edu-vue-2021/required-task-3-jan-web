@@ -45,7 +45,10 @@
                         Список пуст
                     </span>
                 </div>
-                <Chart />
+                <Chart
+                    :tables="tables"
+                    :legend="legend"
+                />
             </div>
             <div
                 v-else
@@ -67,8 +70,6 @@
 <script>
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
-import tables from "@/assets/data/tables.json";
-import legend from "@/assets/data/legend.json";
 import Draggable from "vuedraggable";
 import Chart from "./Chart.vue"
 
@@ -82,7 +83,14 @@ export default {
             type: Object,
             default: null,
         },
-
+        tables: {
+            type: Array,
+            default: null,
+        },
+        legends: {
+            type: Array,
+            default: null,
+        },
     },
     components: {
         LegendItem,
@@ -100,13 +108,12 @@ export default {
         this.loadLegend();
     },
     mounted() {
-        this.tables = tables;
         this.getActualCounter();
 
     },
     methods: {
         getActualCounter() {
-            const result = [0];
+            const result = [];
             this.tables.forEach((table) => {
                 if(!result[table.group_id]) {
                     result[table.group_id] = 1;
@@ -117,7 +124,7 @@ export default {
            this.actualCounter = result;
         },
         loadLegend() {
-            this.legend = legend;
+            this.legend = this.legends;
         },
         closeProfile() {
             this.$emit("update:isUserOpenned", false);

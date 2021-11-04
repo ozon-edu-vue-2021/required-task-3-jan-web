@@ -5,26 +5,27 @@
 </template>
 
 <script>
-
-import legend from "@/assets/data/legend.json";
 import { Doughnut as PieChart } from "vue-chartjs";
-import tables from "@/assets/data/tables.json";
-
 export default {
     components: {
         PieChart
     },
+        props: {
+            tables: {
+                type: Array,
+                default: null,
+            },
+            legend: {
+                type: Array,
+                default: null,
+            },
+    },
     data() {
         return {
-            legend: [],
             actualCounter: []
         };
     },
-    created() {
-        this.loadLegend();
-    },
     mounted() {
-        this.tables = tables;
         this.getActualCounter();
         this.makeChart();
     },
@@ -39,9 +40,6 @@ export default {
                 }
             });
            this.actualCounter = result;
-        },
-        loadLegend() {
-            this.legend = legend;
         },
 
         makeChart() {
