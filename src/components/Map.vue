@@ -69,7 +69,7 @@ export default {
     },
     methods: {
         outsideClick() {
-            console.log('Click outside');
+            this.$emit("update:isUserOpenned", false)
         },
         drawTables() {
             const svgTablesGroup = this.group.append("g").classed("groupPlaces", true);
