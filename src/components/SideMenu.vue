@@ -33,7 +33,7 @@
                             :key="item.color"
                             :color="item.color"
                             :text="item.text"
-                            :counter="actualCounter[index]"
+                            :counter="item.counter"
                             class="legend__item"
                         />
                     </Draggable>
