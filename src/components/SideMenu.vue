@@ -27,14 +27,16 @@
                         v-if="legend.length > 0"
                         class="legend__items"
                     >
-                        <LegendItem
+                    <Draggable v-model="legend">
+                        <legend-item
                             v-for="(item, index) in legend"
-                            :key="index"
+                            :key="item.color"
                             :color="item.color"
                             :text="item.text"
                             :counter="item.counter"
                             class="legend__item"
                         />
+                    </Draggable>
                     </div>
                     <span
                         v-else
@@ -43,9 +45,10 @@
                         Список пуст
                     </span>
                 </div>
-                <div class="legend__chart">
-                    <!-- chart -->
-                </div>
+                <Chart
+                    :tables="tables"
+                    :legend="legend"
+                />
             </div>
             <div
                 v-else
@@ -67,7 +70,8 @@
 <script>
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
-import legend from "@/assets/data/legend.json";
+import Draggable from "vuedraggable";
+import Chart from "./Chart.vue"
 
 export default {
     props: {
@@ -79,26 +83,53 @@ export default {
             type: Object,
             default: null,
         },
+        tables: {
+            type: Array,
+            default: null,
+        },
+        legends: {
+            type: Array,
+            default: null,
+        },
     },
     components: {
         LegendItem,
         PersonCard,
+        Draggable,
+        Chart
     },
     data() {
         return {
             legend: [],
+            actualCounter: []
         };
     },
     created() {
         this.loadLegend();
     },
+    mounted() {
+        this.getActualCounter();
+
+    },
     methods: {
+        getActualCounter() {
+            const result = [];
+            this.tables.forEach((table) => {
+                if(!result[table.group_id]) {
+                    result[table.group_id] = 1;
+                } else {
+                    result[table.group_id] += 1;
+                }
+            });
+           this.actualCounter = result;
+        },
         loadLegend() {
-            this.legend = legend;
+            this.legend = this.legends;
         },
         closeProfile() {
             this.$emit("update:isUserOpenned", false);
         },
+
     },
 };
 </script>
